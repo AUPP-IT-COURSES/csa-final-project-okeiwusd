@@ -13,6 +13,22 @@
                 </div>
                 <div class="card text-center">
                     <div class="card-header">
+                        <h5 class="card-title" >Music Classification</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6 class="card-subtitle mb-2 text-muted">Genre: {{ genre_result }}</h6>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ genre_percentage }}%;" aria-valuenow="{{ mood_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <p class="card-text">{{ '%.2f'|format(genre_percentage) }}% Certainty</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="card text-center">
+                    <div class="card-header">
                         <h5 class="card-title">Mood and Emotion Classification</h5>
                     </div>
                     <div class="card-body">

@@ -139,6 +139,20 @@ def getTracks():
     else:
         emotion_result = "Energetic"
         emotion_percentage = (energetic_count * 100) / (energetic_count + calmcount)    
+        
+        
+    if mood_result == "Happy" and emotion_result == "Calm":
+        genre_result = "Peaceful"
+        
+    elif mood_result == "Happy" and emotion_result == "Energetic":
+        genre_result = "Cheerful/ Upbeat"
+    
+    elif mood_result == "Sad" and emotion_result == "Calm":
+        genre_result = "Melancholic"
+    else:
+        genre_result = "Bittersweet"
+  
+    genre_percentage = (mood_percentage + emotion_percentage) / 2
     data = {
         'Song Name': songs,
         'Artist': artists,
@@ -156,11 +170,11 @@ def getTracks():
     }
     
     # Create a DataFrame from the data dictionary
-    df = pd.DataFrame(data)
+    #df = pd.DataFrame(data)
     
     # Export DataFrame to a CSV file
-    df.to_excel('tracks.xlsx', index=False)
-    return render_template("dashboardjs.html", mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = songs, artist = artists, mood = mood, emotion = emotion, happy = Happy, sad = Sad, energetic = Energetic, calm = Calm,
+    #df.to_excel('tracks.xlsx', index=False)
+    return render_template("liked_dashboard.html",genre_result = genre_result, genre_percentage = genre_percentage, mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = songs, artist = artists, mood = mood, emotion = emotion, happy = Happy, sad = Sad, energetic = Energetic, calm = Calm,
                            length = Length, danceability = Danceability, acousticness = Acousticness, energy = Energy, instrumentalness = Instrumentalness,
                            liveness = Liveness, valence = Valence, loudness = Loudness, speechiness = Speechiness,tempo = Tempo)
 
@@ -311,6 +325,20 @@ def getplaylist():
     else:
         emotion_result = "Energetic"
         emotion_percentage = (energetic_count * 100) / (energetic_count + calmcount)
+        
+    if mood_result == "Happy" and emotion_result == "Calm":
+        genre_result = "Peaceful"
+        
+    elif mood_result == "Happy" and emotion_result == "Energetic":
+        genre_result = "Cheerful/ Upbeat"
+    
+    elif mood_result == "Sad" and emotion_result == "Calm":
+        genre_result = "Melancholic"
+    else:
+        genre_result = "Bittersweet"
+  
+    genre_percentage = (mood_percentage + emotion_percentage) / 2
+    
     data = {
         'Song Name': songs,
         'Artist': artists,
@@ -339,7 +367,7 @@ def getplaylist():
     # #Export DataFrame to a CSV file
     # df.to_excel('sample.xlsx', index=False)
     LINK = playlist_id
-    return render_template("dashboardjs.html", link = LINK, mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = songs, artist = artists, mood = mood, emotion = emotion, happy = Happy, sad = Sad, energetic = Energetic, calm = Calm,
+    return render_template("dashboardjs.html",genre_percentage = genre_percentage, genre_result = genre_result, link = LINK, mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = songs, artist = artists, mood = mood, emotion = emotion, happy = Happy, sad = Sad, energetic = Energetic, calm = Calm,
                            length = Length, danceability = Danceability, acousticness = Acousticness, energy = Energy, instrumentalness = Instrumentalness,
                            liveness = Liveness, valence = Valence, loudness = Loudness, speechiness = Speechiness,tempo = Tempo)
 
@@ -413,9 +441,21 @@ def gettrack():
         emotion_result = "Energetic"
         emotion_percentage = 100 * energetic_value
     
+    if mood_result == "Happy" and emotion_result == "Calm":
+        genre_result = "Peaceful"
+        
+    elif mood_result == "Happy" and emotion_result == "Energetic":
+        genre_result = "Cheerful/ Upbeat"
+    
+    elif mood_result == "Sad" and emotion_result == "Calm":
+        genre_result = "Melancholic"
+    else:
+        genre_result = "Bittersweet"
+  
+    genre_percentage = (mood_percentage + emotion_percentage) / 2
     link = track_id
  
-    return render_template("trackdashboard.html", link = link,mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = track_name, artist = track_artist, mood = mood_result, emotion = emotion_result, happy = happy_value, sad = sad_value, energetic = energetic_value, calm = calm_value,
+    return render_template("trackdashboard.html",genre_percentage = genre_percentage, genre_result = genre_result, link = link,mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = track_name, artist = track_artist, mood = mood_result, emotion = emotion_result, happy = happy_value, sad = sad_value, energetic = energetic_value, calm = calm_value,
                            length = Length, danceability = Danceability, acousticness = Acousticness, energy = Energy, instrumentalness = Instrumentalness,
                            liveness = Liveness, valence = Valence, loudness = Loudness, speechiness = Speechiness,tempo = Tempo)
     
