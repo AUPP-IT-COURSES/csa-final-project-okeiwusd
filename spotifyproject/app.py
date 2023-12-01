@@ -204,7 +204,7 @@ def getplaylist():
     tracks = helper.get_playlist_track_name(playlist)
     artist = helper.get_playlist_track_artist(playlist)
     id = helper.get_track_id(playlist)
-    feature = sp.audio_features(id[0])
+
   
     songs,artists,Length, Danceability, Acousticness, Energy, Instrumentalness, Liveness, Valence, Loudness, Speechiness, Tempo, Happy, Sad, Energetic, Calm, mood, emotion= ([] for i in range(18))
 
@@ -459,28 +459,58 @@ def gettrack():
                            length = Length, danceability = Danceability, acousticness = Acousticness, energy = Energy, instrumentalness = Instrumentalness,
                            liveness = Liveness, valence = Valence, loudness = Loudness, speechiness = Speechiness,tempo = Tempo)
     
-@app.route('/reccomendation')
-def reccomendation():
+@app.route('/toptracks',methods=["GET", "POST"])
+def toptracks():
     try:
         token_info = helper.get_user_token(TOKEN_INFO)
     except:
         print("user not logged in")
         redirect(url_for("login", _external = False))
         
-    sp = spotipy.Spotify(auth=token_info['access_token'])
-    link = request.form.get("link")
-        # Split the URL by '/'
-    url_parts = link.split('/')
-
-    # Get the playlist ID from the URL parts
-    playlist_id = url_parts[-1].split('?')[0]
-    #print(playlist_id)
-    
-    token_info = helper.get_user_token(TOKEN_INFO)
+    time_range = request.form.get('time_range')
     sp = spotipy.Spotify(auth=token_info['access_token'])
     
+    top_tracks = sp.current_user_top_tracks(limit=20, offset=0,time_range=time_range)['items']
+    songs = []
+    artists = []
+    href = []
+    for track in top_tracks:
+        
+        # Extract track information
+        track_info = track
+        songs.append(track_info['name'])
+        artists.append(track_info['artists'][0]['name'])
+        url_parts = track['uri'].split(':')
+        link = url_parts[-1]
+        
+        href.append(link)
     
 
+    
+   
+    return render_template('toptracks.html', songs = songs, artists = artists,link = href)
 
+@app.route('/topartists',methods=["GET", "POST"])
+def topartists():
+    try:
+        token_info = helper.get_user_token(TOKEN_INFO)
+    except:
+        print("user not logged in")
+        redirect(url_for("login", _external = False))
+        
+    time_range = request.form.get('time_range')
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    
+    top_artists = sp.current_user_top_artists(limit=20,offset=0,time_range=time_range)['items']
+    link =[]
+
+    for artist in top_artists:
+        url_parts = artist['uri'].split(':')
+        link.append(url_parts[-1])
+        
+      
+
+ 
+    return render_template("topartists.html", link = link)
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")

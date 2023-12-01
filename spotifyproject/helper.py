@@ -83,7 +83,7 @@ def create_spotify_oauth():
     return SpotifyOAuth(client_id= client_id,
                         client_secret=client_secret,
                         redirect_uri= url_for("redirectpage", _external=True),
-                        scope="user-library-read"
+                        scope="user-library-read user-top-read"
                         )
 
 def get_user_token(TOKEN_INFO):
@@ -191,19 +191,3 @@ def get_energetic_value(danceability_value, energy_value, valence_value, instrum
     return energetic_value
 
 token = get_token()
-
-# result =search_for_artist(token, "yoasobi")
-# artist_id = result["id"]    
-
-# songs = get_songs_by_artist(token,artist_id)
-
-# for idx, song in enumerate(songs):
-#     print(f"{idx + 1}. {song['name']} | {song['popularity']}")
-    
-
-#user_playlist = get_user_playlist(token, user_id)
-# playlist_id = "0vlFkVxN2LIthqUeQQYbSj?si=784d9b5ae0e04a32"
-# playlist = get_playlist(token, playlist_id)
-
-# for idx,song in enumerate(playlist):
-#     print(f"{idx + 1}. {song['track']['name']}")
