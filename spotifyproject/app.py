@@ -28,7 +28,7 @@ def redirectpage():
 
 
 
-@app.route('/get_user_track')
+@app.route('/get_user_track', methods = ["GET", "POST"])
 def getTracks():
     try:
         token_info = helper.get_user_token(TOKEN_INFO)
@@ -41,11 +41,11 @@ def getTracks():
     artists = []
     artist_name = []
     popularity = []
-    Happy,Sad,Calm,Energetic,mood,emotion,Length, Danceability, Acousticness, Energy, Instrumentalness, Liveness, Valence, Loudness, Speechiness, Tempo = ([] for i in range(10))
+    Happy,Sad,Calm,Energetic,mood,emotion,Length, Danceability, Acousticness, Energy, Instrumentalness, Liveness, Valence, Loudness, Speechiness, Tempo = ([] for i in range(16))
     Valence_weight = 1
     Energy_weight = 0.6
     Danceability_weight = 0.4
-    for offsetamount in range(6):
+    for offsetamount in range(1):
         saved_tracks = sp.current_user_saved_tracks(limit=50, offset=offsetamount*50)['items']
     
         for i in range(len(saved_tracks)):
@@ -94,11 +94,12 @@ def getTracks():
                 valence_value = test_feature[feature]['valence']
                 energy_value = test_feature[feature]['energy']
                 danceability_value = test_feature[feature]['danceability']
+                instrumental_value = test_feature[feature]['instrumentalness']
                 
-                happy_value = helper.get_happy_value(valence_value,energy_value)
-                sad_value = helper.get_sad_value(valence_value,energy_value)
-                calm_value = helper.get_calm_value(danceability_value, energetic_value)
-                energetic_value = helper.get_energetic_value(danceability_value, energetic_value)
+                happy_value = helper.get_happy_value(valence_value,energy_value,danceability_value)
+                sad_value = helper.get_sad_value(valence_value,energy_value,danceability_value)
+                calm_value = helper.get_calm_value(danceability_value, energy_value,valence_value,instrumental_value)
+                energetic_value = helper.get_energetic_value(danceability_value, energy_value,valence_value,instrumental_value)
                 
                 Happy.append(happy_value)
                 Sad.append(sad_value)
@@ -159,7 +160,7 @@ def getTracks():
     
     # Export DataFrame to a CSV file
     df.to_excel('tracks.xlsx', index=False)
-    return render_template("Get_user_track.html", spotify_link = link, mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = songs, artist = artists, mood = mood, emotion = emotion, happy = Happy, sad = Sad, energetic = Energetic, calm = Calm,
+    return render_template("dashboardjs.html", mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = songs, artist = artists, mood = mood, emotion = emotion, happy = Happy, sad = Sad, energetic = Energetic, calm = Calm,
                            length = Length, danceability = Danceability, acousticness = Acousticness, energy = Energy, instrumentalness = Instrumentalness,
                            liveness = Liveness, valence = Valence, loudness = Loudness, speechiness = Speechiness,tempo = Tempo)
 
@@ -178,7 +179,6 @@ def getplaylist():
 
     # Get the playlist ID from the URL parts
     playlist_id = url_parts[-1].split('?')[0]
-    #print(playlist_id)
     
     token_info = helper.get_user_token(TOKEN_INFO)
     sp = spotipy.Spotify(auth=token_info['access_token'])
@@ -338,8 +338,8 @@ def getplaylist():
 
     # #Export DataFrame to a CSV file
     # df.to_excel('sample.xlsx', index=False)
-    
-    return render_template("dashboardjs.html", spotify_link = link, mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = songs, artist = artists, mood = mood, emotion = emotion, happy = Happy, sad = Sad, energetic = Energetic, calm = Calm,
+    LINK = playlist_id
+    return render_template("dashboardjs.html", link = LINK, mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = songs, artist = artists, mood = mood, emotion = emotion, happy = Happy, sad = Sad, energetic = Energetic, calm = Calm,
                            length = Length, danceability = Danceability, acousticness = Acousticness, energy = Energy, instrumentalness = Instrumentalness,
                            liveness = Liveness, valence = Valence, loudness = Loudness, speechiness = Speechiness,tempo = Tempo)
 
@@ -413,7 +413,9 @@ def gettrack():
         emotion_result = "Energetic"
         emotion_percentage = 100 * energetic_value
     
-    return render_template("trackdashboard.html", mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = track_name, artist = track_artist, mood = mood_result, emotion = emotion_result, happy = happy_value, sad = sad_value, energetic = energetic_value, calm = calm_value,
+    link = track_id
+ 
+    return render_template("trackdashboard.html", link = link,mood_result = mood_result, mood_percentage = mood_percentage, emotion_result = emotion_result, emotion_percentage = emotion_percentage, Name = track_name, artist = track_artist, mood = mood_result, emotion = emotion_result, happy = happy_value, sad = sad_value, energetic = energetic_value, calm = calm_value,
                            length = Length, danceability = Danceability, acousticness = Acousticness, energy = Energy, instrumentalness = Instrumentalness,
                            liveness = Liveness, valence = Valence, loudness = Loudness, speechiness = Speechiness,tempo = Tempo)
     
